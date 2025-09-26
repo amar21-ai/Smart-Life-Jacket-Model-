@@ -7,7 +7,11 @@ It processes real-time telemetry (heart rate, SpO₂, humidity, sinking state, l
 - Cleans and preprocesses telemetry data  
 - Random Forest model for rescue priority prediction  
 - Flask API for real-time scoring  
-- Interactive dashboard to visualize users and rescue paths  
+- Interactive dashboard to visualize users and rescue paths
+  
+🔑 Tech Stack
+
+Python · scikit-learn · Flask · pandas · Leaflet.js · Bootstrap
 
 ## ⚡ Usage
 ```bash
@@ -23,6 +27,4 @@ python train_model.py
 
 # run API
 python serve_priority.py
-🔑 Tech Stack
 
-Python · scikit-learn · Flask · pandas · Leaflet.js · Bootstrap
