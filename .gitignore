@@ -1,0 +1,33 @@
+cat > .gitignore << 'EOF'
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Envs / IDEs
+.env
+.venv/
+venv/
+env/
+.vscode/
+.idea/
+.DS_Store
+
+# Build / packaging
+dist/
+build/
+*.egg-info/
+
+# Data / models (edit if you DO want these in repo)
+*.joblib
+*.pkl
+*.h5
+*.pt
+*.ckpt
+*.csv
+
+# Other
+*.sqlite3
+*.db
+EOF
