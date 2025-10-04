@@ -279,15 +279,6 @@
           <div class="dashboard-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
               <h4>Live Rescue Map</h4>
-              <div>
-                <select id="rescue-count" class="form-select form-select-sm">
-                  <option value="3" selected>3 Rescues</option>
-                  <option value="5">5 Rescues</option>
-                </select>
-                <button id="btn-draw-paths" class="btn btn-primary btn-sm ms-2">
-                  <i class="fas fa-route"></i> Calculate Routes
-                </button>
-              </div>
             </div>
             <div id="map"></div>
           </div>
@@ -367,7 +358,7 @@
         .bindPopup("<b>Rescue Center</b><br>Alexandria Port");
 
       // store markers keyed by id
-      const markers = {};
+      let markers = {};
 
       function makeMarker(v) {
         const cls = v.priority_class;
@@ -571,6 +562,7 @@
           const sortedVictims = rows
             .sort(
               (a, b) =>
+                // Sort by priority score (column 7)
                 parseFloat(b.children[6].textContent) -
                 parseFloat(a.children[6].textContent)
             )
@@ -578,7 +570,7 @@
 
           // Draw paths for top priority victims
           sortedVictims.forEach((row, index) => {
-            const id = row.children[0].textContent;
+            const id = row.children[0].textContent; // ID is in first column
             const marker = markers[id];
             if (!marker) return;
 
@@ -618,6 +610,7 @@
                 [victimLatLng.lat, victimLatLng.lng]
               ) / 1000
             ).toFixed(1);
+
             L.marker(midPoint, {
               icon: L.divIcon({
                 className: "distance-label",
@@ -743,7 +736,6 @@
         const rows = Array.from(document.querySelectorAll("#tbody tr"));
         // if empty no-op
         if (rows.length === 0) return;
-        // re-send existing victims to refresh predictions (simulate live updates)
         const payload = rows.map((r) => ({
           id: r.children[0].textContent,
           heart_rate: Number(r.children[1].textContent),
@@ -819,6 +811,41 @@
           : 0;
         document.getElementById("avg-eta").textContent = `${avgEta} min`;
       }
+
+      function updateMap(predictions) {
+        // Clear existing markers
+        Object.values(markers).forEach((marker) => map.removeLayer(marker));
+        markers = {};
+
+        // Add new markers
+        predictions.forEach((victim) => {
+          upsertVictim(victim);
+        });
+      }
+
+      function updateTable(predictions) {
+        const tbody = document.getElementById("tbody");
+        tbody.innerHTML = ""; // Clear existing rows
+        predictions.forEach((victim) => {
+          updateTableRow(victim.id, victim);
+        });
+        updateStats();
+      }
     </script>
+    <div id="status" class="small-muted mt-2">ready</div>
+    <button id="btn-toggle-auto" class="btn btn-outline-secondary btn-sm">
+      <i class="fa-solid fa-toggle-on"></i> Auto: ON
+    </button>
+    <div class="btn-group btn-group-sm">
+      <button id="filter-all" class="btn btn-outline-secondary active">
+        All
+      </button>
+      <button id="filter-high" class="btn btn-outline-secondary">High</button>
+      <button id="filter-medium" class="btn btn-outline-secondary">
+        Medium
+      </button>
+      <button id="filter-low" class="btn btn-outline-secondary">Low</button>
+    </div>
+    <canvas id="featChart" class="chart-card"></canvas>
   </body>
 </html>

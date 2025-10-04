@@ -84,7 +84,10 @@ def predict():
             "state": int(row.get("state", 0)),
             "distance_km": round(float(row.get("distance_km", 0)), 3),
             "eta_min": round(float(row.get("eta_min", 0)), 2),
-            "last_packet_s": float(row.get("last_packet_s", 0))
+            "last_packet_s": float(row.get("last_packet_s", 0)),
+            # Include coordinates in response
+            "lat": float(row.get("lat", 0)) if "lat" in row else None,
+            "lon": float(row.get("lon", 0)) if "lon" in row else None
         })
 
     # if input was single dict, return single object

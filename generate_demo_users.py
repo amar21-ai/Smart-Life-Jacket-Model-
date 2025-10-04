@@ -28,33 +28,18 @@ def generate_sea_coordinates():
 
 def generate_demo_users(n_users=100):
     users = []
-    
     for i in range(n_users):
-        lat, lon = generate_sea_coordinates()
-        
-        # Randomly decide if user is in distress
         is_distress = random.random() < 0.15  # 15% chance of distress
         
-        if is_distress:
-            heart_rate = random.randint(120, 160)
-            spo2 = random.randint(75, 85)
-            humidity = random.randint(75, 95)
-            state = 1
-        else:
-            heart_rate = random.randint(60, 100)
-            spo2 = random.randint(95, 100)
-            humidity = random.randint(30, 60)
-            state = 0
-        
         user = {
-            "id": f"user_{i+1:03d}",
-            "lat": lat,
-            "lon": lon,
-            "heart_rate": heart_rate,
-            "spo2": spo2,
-            "humidity": humidity,
-            "state": state,
-            "last_packet_s": random.randint(5, 60)
+            "id": f"USER_{i+1:03d}",
+            "heart_rate": random.randint(120, 160) if is_distress else random.randint(60, 100),
+            "spo2": random.randint(75, 85) if is_distress else random.randint(95, 100),
+            "humidity": random.uniform(75, 95) if is_distress else random.uniform(30, 60),
+            "state": 1 if is_distress else 0,
+            "lat": round(random.uniform(31.2, 31.4), 5),  # Alexandria offshore area
+            "lon": round(random.uniform(29.8, 30.1), 5),  # Alexandria offshore area
+            "last_packet_s": random.randint(1, 60)
         }
         users.append(user)
     
